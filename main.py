@@ -2,10 +2,12 @@ import discord
 import os
 import datetime
 from dotenv import load_dotenv
+import re
 
 # Load environment variables from mySecrets.env
 load_dotenv('mySecrets.env')
 token = os.getenv('DISCORD_TOKEN')
+
 
 if not token:
     print("No Discord token found. Please set the DISCORD_TOKEN environment variable.")
@@ -39,20 +41,17 @@ async def on_ready():
 @client.event
 async def on_message(message):
     print(f'Message from {message.author}: {message.content}')
+    strMsg = str(message.content)
     if message.author == client.user:
-        return  # skip messages from the bot itself
-    if message.content.lower() == "/time":
-        now = datetime.datetime.now()
-        formatted = now.strftime("%D %H:%M:%S")
-        await message.channel.send(f"Current server time: {formatted}")
-    elif message.content.startswith(f"<@{client.user.id}>"):
+        return
+    if strMsg.startswith("/time"):
+        x = datetime.datetime.now()
+        y = x.strftime("%D %H:%M:%S")
+        extractedMsg = re.findall(r"/time\s(.*)", strMsg)
+        await message.channel.send(f"Hello {message.author} Current server time: {y} Im gonna call you {extractedMsg}")
+    elif message.content.startswith(f"<{client.user.id}>"):
         await message.channel.send('Hello there, You are talking to me!')
 
-@client.tree.command(name="time", description="Get the current server time")
-async def time_command(interaction: discord.Interaction):
-    x = datetime.datetime.now()
-    y = x.strftime("%D %H:%M:%S")
-    await interaction.response.send_message(f"time:{y}")
 
 try:
     client.run(token)
