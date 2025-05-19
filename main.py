@@ -1,27 +1,30 @@
 import discord
 import os
 import datetime
-import re
 from dotenv import load_dotenv
 
-# Load environment variables from token.env
+# Load environment variables from mySecrets.env
 load_dotenv('mySecrets.env')
 token = os.getenv('DISCORD_TOKEN')
-try:
-    if not token:
-        raise ValueError("No Discord token found. Please set the DISCORD_TOKEN environment variable.")
-except ValueError as e:
-    print(e)
+
+if not token:
+    print("No Discord token found. Please set the DISCORD_TOKEN environment variable.")
     exit(1)
 
-# create a new discord client
-try:
-    intents = discord.Intents.default()
-    intents.message_content = True
-    client = discord.Client(intents=intents)
-except Exception as e:
-    print(f"Got an error: {e}")
-    exit()
+# Define the client class BEFORE creating an instance
+class MyClient(discord.Client):
+    def __init__(self, *, intents):
+        super().__init__(intents=intents)
+        self.tree = discord.app_commands.CommandTree(self)
+
+    async def setup_hook(self):
+        # Sync commands with Discord
+        await self.tree.sync()
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = MyClient(intents=intents)
 
 @client.event
 async def on_ready():
@@ -37,20 +40,21 @@ async def on_ready():
 async def on_message(message):
     print(f'Message from {message.author}: {message.content}')
     if message.author == client.user:
-        print("Message from self, skipping")
-        return
-    if message.content.startswith(f'<@{client.user.id}> time'):
-        x = datetime.datetime.now()
-        y = (x.strftime("%D %H:%M:%S"))
-        await message.channel.send(y)
+        return  # skip messages from the bot itself
+    if message.content.lower() == "/time":
+        now = datetime.datetime.now()
+        formatted = now.strftime("%D %H:%M:%S")
+        await message.channel.send(f"Current server time: {formatted}")
     elif message.content.startswith(f"<@{client.user.id}>"):
-         await message.channel.send('Hello there, You are talking to me!')
+        await message.channel.send('Hello there, You are talking to me!')
 
+@client.tree.command(name="time", description="Get the current server time")
+async def time_command(interaction: discord.Interaction):
+    x = datetime.datetime.now()
+    y = x.strftime("%D %H:%M:%S")
+    await interaction.response.send_message(f"time:{y}")
 
 try:
     client.run(token)
 except Exception as e:
     print(f"An error occurred: {e}")
-
-
-# 
