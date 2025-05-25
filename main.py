@@ -3,11 +3,12 @@ import os
 import datetime
 from dotenv import load_dotenv
 import re
+import requests
+import botWeatherAPI
 
 # Load environment variables from mySecrets.env
 load_dotenv('mySecrets.env')
 token = os.getenv('DISCORD_TOKEN')
-
 
 if not token:
     print("No Discord token found. Please set the DISCORD_TOKEN environment variable.")
@@ -38,20 +39,37 @@ async def on_ready():
     else:
         print("Channel not found.")
 
+
 @client.event
 async def on_message(message):
     print(f'Message from {message.author}: {message.content}')
     strMsg = str(message.content)
     if message.author == client.user:
         return
-    if strMsg.startswith("/time"):
-        x = datetime.datetime.now()
-        y = x.strftime("%D %H:%M:%S")
-        extractedMsg = re.findall(r"/time\s(.*)", strMsg)
-        await message.channel.send(f"Hello {message.author} Current server time: {y} Im gonna call you {extractedMsg}")
-    elif message.content.startswith(f"<{client.user.id}>"):
-        await message.channel.send('Hello there, You are talking to me!')
 
+    match strMsg:
+       
+        case str() if re.match(r"/time(.*)", strMsg):
+            x = datetime.datetime.now()
+            y = x.strftime("%D %H:%M:%S")
+            await message.channel.send(f"Hello {message.author} Current server time: {y} ")
+
+        case str() if re.match(r"/weather (.*)", strMsg):
+            city = re.findall(r"/weather(.*)", strMsg)
+            if city:
+                result = botWeatherAPI.getWeather(city)
+                await message.channel.send(result)
+            else:
+                await message.channel.send("Please provide a city name after the /weather command.")
+
+        case str() if re.match(r"/help(.*)", strMsg):
+            await message.channel.send('Commands: /time, /weather, /help')
+
+        case str() if re.match(fr"<@{client.user.id}>(.*)", strMsg):
+            await message.channel.send('Hello there, You are talking to me the bot')
+
+        case _:
+            print ("Unknown command")
 
 try:
     client.run(token)
