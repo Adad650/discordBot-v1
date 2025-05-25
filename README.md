@@ -1,15 +1,33 @@
-Made a bot that tells the time on discord with using /time.
+# Discord Time & Weather Bot
 
-Insert your bot token into a new file called mySecrets.env
+A Discord bot that tells the time and weather using slash commands.
 
-Future Plans
+## Setup
 
-Bot functionality:
-* /weather: Integrate this with the weather app
-* /gpt: Pass forward the chat message to gpt
+1. Clone this repository.
+2. Install dependencies:
+   ```
+   pip install discord.py
+   ```
+3. Insert your bot token and OpenWeatherMap API key into a new file called `mySecrets.env`:
+   ```
+   DISCORD_TOKEN="your_discord_token_here"
+   API_KEY="your_openweathermap_api_key_here"
+   ```
 
-Skill:
-* Send images from bot->server
+## Usage
 
-Cleaning up / Mantaining code:
-* Add ability to add lots of more slash commands and keep code clean. (on_message can send request further down to slash-command-specific functions)
+- `/time` — Shows the current server time.
+- `/weather [city][State][Country]` — Shows the weather for the specified city.
+- `/help` — Shows help information.
+
+## Future Plans
+
+**Bot functionality:**
+- `/gpt`: Pass forward the chat message to GPT
+
+**Skill:**
+- Send images from bot to server
+
+**Cleaning up / Maintaining code:**
+- Add ability to add more slash commands and keep code clean (e.g., route `on_message` to slash-command-specific functions)
