@@ -43,6 +43,7 @@ def getTemperatureAndHumidity():
         T, H = getTemperatureAndHumidityOnce(s)
         cleanupSensor(s)
         print ("Temperature is: ", T, " and Humidity is: ", H)
+        return (T, H)
 
 
     print ("hi there")
