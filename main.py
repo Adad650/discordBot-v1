@@ -71,8 +71,8 @@ async def on_message(message):
             await message.channel.send('Hello there, You are talking to me the bot')
         case str() if re.match(r"/sensor(.*)", strMsg):
             try:
-                dht11Sensor.getTemperatureAndHumidity()
-                await message.channel.send(f"Temp: {dht11Sensor.temperature}°C   Humidity: {dht11Sensor.humidity}%")
+                x = [dht11Sensor.getTemperatureAndHumidity()]
+                await message.channel.send(f"Temp: {dht11Sensor.getTemperatureAndHumidity[0]}°C   Humidity: {dht11Sensor.humidity[1]}%")
             except Exception as e:
                 await message.channel.send(f"An error occurred while retrieving sensor data: {e}")
 
