@@ -1,2 +1,5 @@
 mySecrets.env
 __pycache__/
+main.py
+/DS_Store
+.DS_Store

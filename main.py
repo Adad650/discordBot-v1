@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import re
 import requests
 import botWeatherAPI
+import dht11Sensor
 
 # Load environment variables from mySecrets.env
 load_dotenv('mySecrets.env')
@@ -40,6 +41,7 @@ async def on_ready():
         print("Channel not found.")
 
 
+
 @client.event
 async def on_message(message):
     print(f'Message from {message.author}: {message.content}')
@@ -67,6 +69,13 @@ async def on_message(message):
 
         case str() if re.match(fr"<@{client.user.id}>(.*)", strMsg):
             await message.channel.send('Hello there, You are talking to me the bot')
+        case str() if re.match(r"/sensor(.*)", strMsg):
+            try:
+                dht11Sensor.getTemperatureAndHumidity()
+                await message.channel.send("Sensor data retrieved successfully.")
+            except Exception as e:
+                await message.channel.send(f"An error occurred while retrieving sensor data: {e}")
+
 
         case _:
             print ("Unknown command")
