@@ -1,6 +1,6 @@
 # Discord Time & Weather Bot
 
-A Discord bot that tells the time and weather using slash commands.
+A Discord bot that tells the time and weather using slash commands or text commands.
 
 ## Setup
 
@@ -18,9 +18,13 @@ A Discord bot that tells the time and weather using slash commands.
 ## Usage
 
 - `/time` — Shows the current server time.
-- `/weather [city][State][Country]` — Shows the weather for the specified city.
+- `/weather <city>[,State][,Country]` — Shows the weather for the specified city. Example: `/weather London` or `/weather San Francisco,CA,US`
 - `/sensor` — Reads temperature and humidity from a DHT11 sensor (requires Raspberry Pi with sensor connected).
 - `/help` — Shows help information.
+
+> **Note:**  
+> The bot currently responds to both slash commands and text commands typed in the chat (e.g., `/time`, `/weather ...`).  
+> Slash command registration may require inviting the bot with the correct permissions and waiting for Discord to sync commands.
 
 ## Hardware Requirements
 
